@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Storage Contract</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+
+  <style>
+    body {
+      
+      background:linear-gradient(135deg, rgb(0, 0, 0) ,rgb(128, 127, 123));
+    }
+
+    .button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 10px;
+      width: 100px;
+      height: 70px;
+   
+      margin: 5px;
+      padding: 5px;
+      box-shadow: 18px 18px 25px rgb(0, 0, 0)
+    }
+    .connectwallet{
+       margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 10px;
+      width: 300px;
+      height: 30px;
+   
+      margin: 5px;
+      padding: 5px;
+      box-shadow: 18px 18px 25px rgb(0, 0, 0)
+    }
+    #value {
+      font-size: 24px;
+      margin-top: 20px;
+
+    }
+    h1{
+        font-size: 50px;
+        text-align: center;
+         text-shadow: 18px 18px 25px rgb(0, 0, 0);
+    }
+     .header{
+        text-align: center;
+    }
+     .main {
+        margin: 20px;
+        padding: 20px;
+        display: flex;
+        
+    }
+    .left{
+        margin: 0px 40px ;
+        align-content: center;
+        
+        
+    }
+    .right{
+        background-image: url("asset/pngtree-smart-contract-deals-business-png-image_3592690.jpg");
+        width: 400px;
+        height: 400px;
+        background-position: center center;       
+        align-self: center center ;
+        border-radius: 50%;
+        margin-left: 400px;
+         box-shadow: 18px 18px 25px rgb(0, 0, 0);
+    }
+    .value{
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+<section class="header">
+  <h1 >🧮 Simple Storage DApp</h1>
+
+  <button class="connectwallet" onclick="connectWallet()">Connect Wallet</button>
+</section>
+<section class="main">
+  <section class="left">
+
+  <button class="button" onclick="increment()">➕ Increment</button>
+  <button class="button" onclick="decrement()">➖ Decrement</button>
+  <button class="button" onclick="getValue()">📊 Get Value</button>
+  </section>
+  <section class="right"></section></section>
+
+  <div class="value" id="value">Current Value: <span id="display">-</span></div>
+
+  <script>
+    const contractAddress = "0xcB9355C4e498e6D228374F0cd6c254DaF32bA94e";
+    const contractABI =
+      [
+        {
+          "inputs": [],
+          "name": "decrement",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "increment",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "int256",
+              "name": "_val",
+              "type": "int256"
+            }
+          ],
+          "name": "set",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "getValue",
+          "outputs": [
+            {
+              "internalType": "int256",
+              "name": "",
+              "type": "int256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "value",
+          "outputs": [
+            {
+              "internalType": "int256",
+              "name": "",
+              "type": "int256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        }
+      ];
+
+    let provider, signer, contract;
+
+    async function connectWallet() {
+      if (window.ethereum) {
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        signer = provider.getSigner();
+        contract = new ethers.Contract(contractAddress, contractABI, signer);
+        alert("Wallet connected!");
+      } else {
+        alert("Install MetaMask first!");
+      }
+    }
+
+    async function increment() {
+      const tx = await contract.increment();
+      await tx.wait();
+      getValue();
+    }
+
+    async function decrement() {
+      const tx = await contract.decrement();
+      await tx.wait();
+      getValue();
+    }
+
+    async function getValue() {
+      const val = await contract.getValue();
+      document.getElementById("display").innerText = val.toString();
+    }
+  </script>
+</body>
+
+</html>
